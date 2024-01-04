@@ -1,0 +1,74 @@
+
+spring:
+  application:
+    name: service-gateway
+  profiles:
+    active: development
+
+
+---
+# common configuration
+
+server:
+  port: 8888
+
+management:
+  endpoint:
+    gateway:
+      enabled: true    # default value
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: '*'
+            allowedHeaders: '*'
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      discovery.locator:
+        enabled: true
+        lowerCaseServiceId: true
+      routes:
+        - id: service-pofect
+          uri: lb://service-pofect
+          predicates:
+            - Path=/service-pofect/**
+#           queryString
+          filters:
+            - RewritePath=/service-pofect/?(?<remaining>.*), /$\{remaining}
+
+
+
+---
+# development configuration
+
+spring:
+  config:
+    activate:
+      on-profile: development
+
+logging:
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n"
+  level:
+    root: INFO
+
+eureka:
+  client:
+    #registerWithEureka? false ? ??? eureka register? ?? ??
+    registerWithEureka: false
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+
