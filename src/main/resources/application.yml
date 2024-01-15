@@ -94,7 +94,7 @@ logging:
 
 eureka:
   client:
-    registerWithEureka: false
+    registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
       defaultZone: http://52.79.114.216:8761/eureka/
